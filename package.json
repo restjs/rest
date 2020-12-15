@@ -4,22 +4,41 @@
   "description": "A simple framework to build the back-end applications by using JSX syntax (ReactJS)",
   "private": false,
   "main": "./dist/index.js",
-  "types" : "./dist/index.d.ts",
+  "types": "./dist/index.d.ts",
   "scripts": {
     "build": "tsc -p tsconfig.json"
   },
   "keywords": [
-    "react", "express", "react-dom", "back-end", "rest", "rest-api", "validation", "typescript", "metadata", "decorator",
-    "restjs", "rest-js", "interceptor", "pipe", "pipeline", "http exception", "error handle", "post", "get", "put", "patch",
-    "framework", "controller", "route", "routing", "jsx"
+    "react",
+    "express",
+    "react-dom",
+    "back-end",
+    "rest",
+    "rest-api",
+    "validation",
+    "typescript",
+    "metadata",
+    "decorator",
+    "restjs",
+    "rest-js",
+    "interceptor",
+    "pipe",
+    "pipeline",
+    "http exception",
+    "error handle",
+    "post",
+    "get",
+    "put",
+    "patch",
+    "framework",
+    "controller",
+    "route",
+    "routing",
+    "jsx"
   ],
   "author": "Alireza Roosta",
   "license": "MIT",
   "dependencies": {
-    "@types/express": "^4.17.9",
-    "@types/node": "^14.14.9",
-    "@types/react": "^16.14.0",
-    "@types/react-dom": "^16.9.9",
     "body-parser": "^1.19.0",
     "class-validator": "^0.12.2",
     "express": "^4.17.1",
@@ -28,6 +47,10 @@
     "reflect-metadata": "^0.1.13"
   },
   "devDependencies": {
+    "@types/express": "^4.17.9",
+    "@types/node": "^14.14.9",
+    "@types/react": "^16.14.0",
+    "@types/react-dom": "^16.9.9",
     "nodemon": "^2.0.6",
     "ts-node": "^9.0.0"
   }
