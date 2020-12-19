@@ -5,7 +5,8 @@ import path from "path";
 import RouterException from "./RouterException";
 import {HttpException} from "./HttpException";
 import ValidationPipe, {ValidatorOptions} from "./ValidationPipe";
-import {InjectDecoratorKey} from "./index";
+import {InjectDecoratorKey, InjectRepositoryKey} from "./constants";
+import {Application} from "./Application";
 
 type ShareClassObject = Array<{ _class : any, _instance : any }>;
 
@@ -31,7 +32,7 @@ export interface IRouter {
     ignoreParentFilters? : boolean;
     ignoreParentServices ? : boolean;
 }
-export class Router extends React.Component<IRouter, any>{
+export class Router extends React.Component<IRouter|any, any>{
     private controllers = {};
     private interceptors = {};
     private pipes = {};
@@ -221,12 +222,18 @@ export class Router extends React.Component<IRouter, any>{
 
     private injectDependencies(instance){
         const metaData = Reflect.getMetadata(InjectDecoratorKey, instance);
+        const entities = Reflect.getMetadata(InjectRepositoryKey, instance);
         if(metaData && metaData instanceof Array){
             metaData.forEach((meta)=>{
                 const service = this.services[meta.type];
                 if(service){
                     instance[meta.prop] = service;
                 }
+            })
+        }
+        if(entities && entities instanceof Array){
+            entities.forEach((meta)=>{
+                instance[meta.prop] = Application.getRepository(this.props.__AppId, meta.entity);
             })
         }
     }
@@ -238,10 +245,9 @@ export class Router extends React.Component<IRouter, any>{
             this.generatePipes();
             this.generateInterceptors();
             this.generateFilters();
-            //@ts-ignore
             const routerInstance : ExpressRouter = this.props.__router_instance;
 
-            return React.Children.map(this.props.children, (child: Get)=>{
+            return React.Children.map(this.props.children, (child: Get | Router | any)=>{
                 const routerPath = this.createPath(this.props.path);
                 const childPath = this.createPath(child.props.path);
                 let handlerName;
@@ -280,12 +286,13 @@ export class Router extends React.Component<IRouter, any>{
                             services.push({_class : service, _instance : this.services[service]});
                         })
                     }
-                    //@ts-ignore
+
                     return <Router {...child.props} __router_instance={router}
                                    __parent_pipes={pipes}
                                    __parent_interceptors={interceptors}
                                    __parent_filters={filters}
                                    __parent_services={services}
+                                   __AppId={this.props.__AppId}
                     />;
                 }
 
@@ -302,7 +309,7 @@ export class Router extends React.Component<IRouter, any>{
                 }else if(this.props.controller){
                     controller = this.props.controller;
                 }else{
-                    throw new RouterException(`Please set a valid controller for route : ${path.join(routerPath, childPath)} (${method})`);
+                    throw new RouterException(`Please set a valid controller for the route : ${path.join(routerPath, childPath)} (${method})`);
                 }
 
                 let controllerInstance;
@@ -316,7 +323,7 @@ export class Router extends React.Component<IRouter, any>{
                 if(child.props.handle){
                     handlerName = child.props.handle;
                 }else{
-                    throw new RouterException(`Please set handle option for router : ${path.join(routerPath, childPath)} (${method})`);
+                    throw new RouterException(`Please set handle option for the router : ${path.join(routerPath, childPath)} (${method})`);
                 }
 
                 if( method && !controllerInstance[handlerName] ){

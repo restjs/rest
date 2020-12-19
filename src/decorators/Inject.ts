@@ -1,6 +1,6 @@
 import 'reflect-metadata';
 
-import {InjectDecoratorKey} from "../index";
+import {InjectDecoratorKey} from "../constants";
 
 export function Inject() {
     return function (target : Object, key : string) {
